@@ -41,19 +41,19 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path');
-const cors = require('cors');
+
 
 const app = express();
 
 app.use(bodyParser.json());
-app.use(cors());
+
+
 
 let todos = [];
 
-function findIndex(arr, id) {
-  for (let i = 0; i <= arr.length; i++) {
-    if (arr[i].id === id) return i;
+function findIndex(array, id) {
+  for (let i = 0; i <= array.length; i++) {
+    if (array[i].id === id) return i;
   }
   return -1;
 }
@@ -71,23 +71,23 @@ app.get('/todos', (req, res) => {
   res.json(todos);
 });
 
-app.get('/todos/:id', (req, res) => {
-  const todoIndex = findIndex(todos, parseInt(req.params.id));
-  if (todoIndex === -1) {
-    res.status(404).send();
-  } else {
-    res.json(todos[todoIndex]);
-  }
-});
-
+// app.get('/todos/:id', (req, res) => {
+//   const todoIndex = findIndex(todos, parseInt(req.params.id));
+//   if (todoIndex === -1) {
+//     res.status(404).send();
+//   } else {
+//     res.json(todos[todoIndex]);
+//   }
+// });
+let ctr = 0;
 app.post('/todos', (req, res) => {
   const newTodo = {
-    id: Math.floor(Math.random() * 1000000), // unique random id
+    id: ctr++, // unique random id
     title: req.body.title,
     description: req.body.description
   };
   todos.push(newTodo);
-  res.status(201).json(newTodo);
+  res.json(newTodo);
 });
 
 app.put('/todos/:id', (req, res) => {
@@ -107,13 +107,13 @@ app.delete('/todos/:id', (req, res) => {
     res.status(404).send();
   } else {
     todos = removeAtIndex(todos, todoIndex);
-    res.status(200).send();
+    res.send();
   }
 });
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
-});
+// app.get('/', (req, res) => {
+//   res.sendFile(__dirname + '/index.html');
+// });
 
 
 // for all other routes, return 404
